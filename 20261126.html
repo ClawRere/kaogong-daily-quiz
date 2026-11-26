@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>时政每日练-20261126</title>
+    <style>
+      :root {
+        --bg: #f4f4f2;
+        --surface: #ffffff;
+        --surface-2: #faf9f7;
+        --ink: #1d1d1f;
+        --ink-2: #4c4c50;
+        --ink-3: #6e6e73;
+        --line: #e2e0dc;
+        --accent: #9e2b25;
+        --accent-ink: #ffffff;
+        --accent-soft: #f9ecea;
+        --ok: #1e7d46;
+        --ok-soft: #e7f4ec;
+        --bad: #b3261e;
+        --bad-soft: #fbeae9;
+        --warn: #8a5a00;
+        --warn-soft: #fdf3e0;
+        --sel-border: #9e2b25;
+        --shadow: 0 1px 3px rgba(20, 16, 12, .06);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #161617;
+          --surface: #222224;
+          --surface-2: #2a2a2c;
+          --ink: #f2f2f4;
+          --ink-2: #c9c9cd;
+          --ink-3: #9a9aa0;
+          --line: #3a3a3e;
+          --accent: #e0655c;
+          --accent-ink: #ffffff;
+          --accent-soft: #3d2422;
+          --ok: #5cc98a;
+          --ok-soft: #1f3529;
+          --bad: #f08079;
+          --bad-soft: #3d2321;
+          --warn: #e8b34b;
+          --warn-soft: #3a2f18;
+          --sel-border: #e0655c;
+          --shadow: 0 1px 3px rgba(0, 0, 0, .35);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 120px; }
+
+      /* ---------- 页头 ---------- */
+      .masthead { padding: 10px 2px 18px; border-bottom: 3px solid var(--accent); margin-bottom: 18px; }
+      .masthead .date-line {
+        display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        color: var(--ink-3); font-size: 13px; letter-spacing: .02em; margin-bottom: 8px;
+      }
+      .masthead .date-line .tag {
+        color: var(--accent); border: 1px solid var(--accent); border-radius: 4px;
+        padding: 1px 8px; font-size: 12px; font-weight: 600;
+      }
+      h1 {
+        margin: 0 0 6px; font-size: 28px; line-height: 1.3; font-weight: 800;
+        font-family: "Songti SC", "STSong", "SimSun", serif; letter-spacing: .01em;
+      }
+      .masthead p { margin: 0; color: var(--ink-2); font-size: 14px; }
+
+      /* ---------- 工具条 ---------- */
+      .toolbar {
+        display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; justify-content: space-between;
+        background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+        padding: 10px 14px; box-shadow: var(--shadow); margin-bottom: 16px;
+      }
+      .progress { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-2); }
+      .progress .bar { width: 110px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+      .progress .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
+      .progress b { color: var(--ink); font-variant-numeric: tabular-nums; }
+      .switch-btn {
+        display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+        min-height: 44px; padding: 4px 6px; font: inherit; font-size: 14px; color: var(--ink-2);
+        background: transparent; border: none; border-radius: 8px; user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .switch {
+        width: 44px; height: 26px; border-radius: 13px; background: var(--line); position: relative;
+        transition: background .2s ease; flex: none;
+      }
+      .switch::after {
+        content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+        border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.25);
+        transition: transform .2s ease;
+      }
+      .switch-btn[aria-pressed="true"] .switch { background: var(--accent); }
+      .switch-btn[aria-pressed="true"] .switch::after { transform: translateX(18px); }
+      .switch-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .switch-btn.disabled { opacity: .45; cursor: not-allowed; }
+
+      /* ---------- 成绩条 ---------- */
+      .result {
+        display: none; border-radius: 10px; padding: 16px; margin-bottom: 16px;
+        background: var(--accent-soft); border: 1px solid var(--accent);
+      }
+      .result.show { display: block; }
+      .result .score { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
+      .result .score .num { color: var(--accent); font-variant-numeric: tabular-nums; }
+      .result p { margin: 0; font-size: 14px; color: var(--ink-2); }
+      .notice {
+        display: none; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px;
+        background: var(--warn-soft); color: var(--warn); font-size: 14px; border: 1px solid var(--warn);
+      }
+      .notice.show { display: block; }
+
+      /* ---------- 题目卡 ---------- */
+      .qcard {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 18px 16px 14px; margin-bottom: 14px; box-shadow: var(--shadow);
+      }
+      .qcard.hidden { display: none; }
+      .qhead { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+      .qno {
+        flex: none; min-width: 34px; height: 34px; padding: 0 6px; border-radius: 8px;
+        background: var(--accent); color: var(--accent-ink);
+        display: inline-flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums;
+      }
+      .qmain { flex: 1; min-width: 0; }
+      .cat {
+        display: inline-block; font-size: 12px; font-weight: 700; color: var(--accent);
+        background: var(--accent-soft); border-radius: 4px; padding: 1px 8px; margin-bottom: 5px;
+      }
+      .qstem { margin: 0; font-size: 16.5px; line-height: 1.75; font-weight: 600; }
+      .badge {
+        flex: none; margin-left: auto; font-size: 12px; font-weight: 700; border-radius: 4px;
+        padding: 2px 8px; display: none;
+      }
+      .badge.right { display: inline-block; color: var(--ok); background: var(--ok-soft); }
+      .badge.wrong { display: inline-block; color: var(--bad); background: var(--bad-soft); }
+
+      .options { display: flex; flex-direction: column; gap: 8px; }
+      .opt {
+        display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left;
+        min-height: 48px; padding: 11px 12px; border: 1.5px solid var(--line); border-radius: 10px;
+        background: var(--surface-2); color: var(--ink); font: inherit; font-size: 15.5px; line-height: 1.6;
+        cursor: pointer; -webkit-tap-highlight-color: transparent;
+      }
+      .opt .letter {
+        flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--ink-3);
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 13.5px; font-weight: 700; color: var(--ink-2); margin-top: 1px;
+      }
+      .opt.selected { border-color: var(--sel-border); background: var(--accent-soft); }
+      .opt.selected .letter { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+      .opt.correct { border-color: var(--ok); background: var(--ok-soft); cursor: default; }
+      .opt.correct .letter { background: var(--ok); border-color: var(--ok); color: #fff; }
+      .opt.wrongpick { border-color: var(--bad); background: var(--bad-soft); cursor: default; }
+      .opt.wrongpick .letter { background: var(--bad); border-color: var(--bad); color: #fff; }
+      .opt.locked { cursor: default; }
+      .opt .mark { margin-left: auto; flex: none; font-weight: 700; font-size: 15px; padding-left: 6px; }
+      .opt.correct .mark { color: var(--ok); }
+      .opt.wrongpick .mark { color: var(--bad); }
+
+      .explain { display: none; margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
+      .explain.show { display: block; }
+      .explain .ans { font-weight: 700; margin: 0 0 6px; font-size: 15px; }
+      .explain .ans b { color: var(--accent); }
+      .explain .ans .mine-bad { color: var(--bad); }
+      .explain .ans .mine-ok { color: var(--ok); }
+      .explain .body { margin: 0 0 8px; font-size: 14.5px; color: var(--ink-2); line-height: 1.75; }
+      .explain .body b { color: var(--ink); }
+      .explain .src { margin: 0; font-size: 13px; color: var(--ink-3); }
+
+      /* ---------- 申论 ---------- */
+      .essay-input {
+        width: 100%; min-height: 150px; resize: vertical;
+        border: 1.5px solid var(--line); border-radius: 10px; background: var(--surface-2);
+        color: var(--ink); font: inherit; font-size: 15.5px; line-height: 1.75;
+        padding: 12px; -webkit-tap-highlight-color: transparent;
+      }
+      .essay-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+      .essay-input[readonly] { opacity: .75; }
+      .charcount { margin: 6px 0 0; text-align: right; font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+      .ref-answer { display: none; margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
+      .ref-answer.show { display: block; }
+      .ref-answer .rt { font-weight: 700; margin: 0 0 6px; font-size: 15px; }
+      .ref-answer .rt b { color: var(--accent); }
+      .ref-answer .rb { margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.8; }
+
+      .empty-filter {
+        display: none; text-align: center; color: var(--ink-3); font-size: 15px;
+        padding: 28px 16px; background: var(--surface); border: 1px dashed var(--line); border-radius: 12px;
+      }
+      .empty-filter.show { display: block; }
+
+      /* ---------- 阅读材料 / 错题本 ---------- */
+      .section { margin-top: 26px; }
+      .section h2 {
+        font-size: 19px; margin: 0 0 10px; font-weight: 800;
+        font-family: "Songti SC", "STSong", "SimSun", serif;
+        display: flex; align-items: baseline; gap: 8px;
+      }
+      .section h2 .count { font-family: inherit; font-size: 13px; color: var(--ink-3); font-weight: 400; }
+      .panel {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 16px; box-shadow: var(--shadow);
+      }
+      .panel .empty-note { margin: 0; color: var(--ink-3); font-size: 15px; text-align: center; padding: 10px 0; }
+      .news-item { padding: 10px 0; border-bottom: 1px solid var(--line); }
+      .news-item:last-child { border-bottom: none; padding-bottom: 2px; }
+      .news-item:first-child { padding-top: 2px; }
+      .news-item .t { margin: 0 0 3px; font-size: 15.5px; font-weight: 700; line-height: 1.6; }
+      .news-item .meta { margin: 0 0 4px; font-size: 12.5px; color: var(--accent); font-weight: 600; }
+      .news-item .s { margin: 0; font-size: 14px; color: var(--ink-2); line-height: 1.7; }
+      .wrong-item { padding: 10px 0; border-bottom: 1px solid var(--line); }
+      .wrong-item:last-child { border-bottom: none; padding-bottom: 2px; }
+      .wrong-item:first-child { padding-top: 2px; }
+      .wrong-item .t { margin: 0 0 4px; font-size: 15px; font-weight: 600; line-height: 1.7; }
+      .wrong-item .a { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+      .wrong-item .a b { color: var(--accent); }
+
+      /* ---------- 底部操作条 ---------- */
+      .actionbar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+        background: var(--surface); border-top: 1px solid var(--line);
+        padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      }
+      .actionbar .inner { max-width: 760px; margin: 0 auto; display: flex; gap: 10px; align-items: center; }
+      .actionbar .stat { font-size: 14px; color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+      .btn {
+        flex: 1; min-height: 48px; border-radius: 10px; border: none; cursor: pointer;
+        font: inherit; font-size: 16px; font-weight: 700; padding: 10px 18px;
+      }
+      .btn-primary { background: var(--accent); color: var(--accent-ink); }
+      .btn-primary:active { opacity: .85; }
+      .btn-ghost {
+        flex: none; background: transparent; color: var(--ink-2);
+        border: 1.5px solid var(--line); padding: 10px 16px;
+      }
+      .btn[hidden] { display: none; }
+
+      @media (max-width: 480px) {
+        h1 { font-size: 25px; }
+        .qstem { font-size: 16px; }
+        .progress .bar { width: 72px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .progress .bar i, .switch, .switch::after { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="masthead">
+        <div class="date-line">
+          <span class="tag">2027 湖北省考</span>
+          <span>2026年11月26日 · 星期四</span>
+        </div>
+        <h1>时政每日练-20261126</h1>
+        <p>行测 4 道单选 + 申论 1 道。行测点选项作答，点「交卷」看成绩与解析；申论在输入框作答，交卷后对照参考答案自查。</p>
+      </header>
+
+      <section class="section" style="margin-top:0" aria-labelledby="readingTitle">
+        <h2 id="readingTitle">今日时政速读 <span class="count">阅读材料</span></h2>
+        <div class="panel">
+          <div class="news-item">
+            <p class="t">习近平对党内法规工作作出重要指示</p>
+            <p class="meta">新华社 · 2026年11月25日</p>
+            <p class="s">强调坚持把依规治党当作管党治党基本方式，持续高质量推进党内法规制度建设。</p>
+          </div>
+          <div class="news-item">
+            <p class="t">神舟二十四号载人飞船发射取得圆满成功</p>
+            <p class="meta">央视《新闻联播》 · 2026年11月25日</p>
+            <p class="s">长征二号F遥二十四运载火箭在酒泉卫星发射中心点火发射，乘组含首位进入中国空间站的外籍航天员。</p>
+          </div>
+          <div class="news-item">
+            <p class="t">习近平向“声援巴勒斯坦人民国际日”纪念大会致贺电</p>
+            <p class="meta">新华社 · 2026年11月25日</p>
+            <p class="s">贺电主张推动巴以重启和谈、实现加沙持久停火，为中东地区长治久安创造有利条件。</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="toolbar" style="margin-top:16px">
+        <div class="progress">
+          <span>行测已答 <b id="answeredCount">0</b>/4</span>
+          <span class="bar"><i id="progressBar"></i></span>
+        </div>
+        <button type="button" class="switch-btn disabled" id="wrongToggle" aria-pressed="false" disabled>
+          <span class="switch" aria-hidden="true"></span>
+          <span>只看错题</span>
+        </button>
+      </div>
+
+      <div class="result" id="resultBox" role="status">
+        <p class="score">行测答对 <span class="num" id="scoreNum">0/4</span></p>
+        <p id="scoreNote"></p>
+      </div>
+
+      <div class="notice" id="noticeBox" role="alert"></div>
+
+      <main id="quiz"></main>
+      <div class="empty-filter" id="emptyFilter">全部答对，没有错题。</div>
+
+      <section class="section" aria-labelledby="wrongBookTitle">
+        <h2 id="wrongBookTitle">错题本 <span class="count" id="wrongBookCount"></span></h2>
+        <div class="panel" id="wrongBook">
+          <p class="empty-note">暂无错题</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="actionbar">
+      <div class="inner">
+        <span class="stat" id="barStat">行测已答 0/4</span>
+        <button class="btn btn-ghost" id="resetBtn" hidden>重做</button>
+        <button class="btn btn-primary" id="submitBtn">交卷</button>
+      </div>
+    </div>
+
+    <script>
+      var QUESTIONS = [
+        {
+          cat: "言语理解",
+          stem: "下列各句中，没有语病的一项是（ ）。",
+          options: [
+            "通过这次活动，使我明白了团结的重要性。",
+            "他那崇高的革命品质，经常浮现在我的脑海中。",
+            "我们要认真克服并随时发现工作中的缺点。",
+            "夜深了，夜空中繁星闪烁，月光如水。"
+          ],
+          answer: 3,
+          explanation: "A 项缺主语，“通过……使”滥用介词导致主语残缺；B 项“品质”与“浮现”搭配不当；C 项语序不当，应为“随时发现并认真克服”。只有 D 项表述正确。"
+        },
+        {
+          cat: "数量关系",
+          stem: "甲、乙两人同时从 A、B 两地相向而行，甲每小时行 6 千米，乙每小时行 4 千米，3 小时后两人相遇。A、B 两地相距多少千米？（ ）",
+          options: ["24 千米", "28 千米", "30 千米", "36 千米"],
+          answer: 2,
+          explanation: "相遇时两人共行路程即为两地距离：（6+4）×3=30 千米。"
+        },
+        {
+          cat: "判断推理",
+          stem: "如果小明参加了这次比赛，那么小红也会参加。小红没有参加这次比赛，由此可以推出（ ）。",
+          options: ["小明参加了比赛", "小明没有参加比赛", "小明可能参加了比赛", "无法判断"],
+          answer: 1,
+          explanation: "否定后件则否定前件。小红没有参加，说明“小明参加→小红参加”的前件不成立，即小明没有参加。"
+        },
+        {
+          cat: "资料分析",
+          stem: "2025 年某市粮食产量统计表（单位：万吨）：小麦 120， 水稻 150， 玉米 90， 大豆 40。水稻产量比小麦产量多百分之几？（ ）",
+          options: ["20%", "25%", "30%", "33.3%"],
+          answer: 1,
+          explanation: "（150-120）÷120=25%。"
+        }
+      ];
+      var ESSAY = {
+        cat: "申论",
+        material: "给定资料：近年来，A 市某社区以居民需求为导向，推出多项便民举措：设立“一站式”服务大厅，整合社保、医保等 30 余项业务，居民办事“只进一扇门”；组建 120 人的志愿服务队，为独居老人提供上门代办、定期探访；开设“周末课堂”，组织书法、健康讲座等活动 40 余场；建立线上议事平台，居民通过手机就能反映问题，问题平均办结时间由 7 天缩短至 2 天。居民满意度从 82% 提升至 96%。",
+        requirement: "作答要求：请根据给定资料，概括该社区提升服务效能的主要做法，不超过 150 字。",
+        reference: "该社区主要做法：一是整合服务资源，设立“一站式”服务大厅，社保、医保等 30 余项业务集中办理；二是组建 120 人志愿服务队，为独居老人提供上门代办和定期探访；三是丰富社区活动，开设“周末课堂”，举办书法、健康讲座等 40 余场；四是搭建线上议事平台，居民可手机反映问题，平均办结时间由 7 天缩短至 2 天；居民满意度由 82% 提升至 96%。"
+      };
+      var LETTERS = ["A", "B", "C", "D"];
+      var TOTAL = QUESTIONS.length;
+
+      var selected = {};      // 题号 -> 选项下标（仅行测）
+      var submitted = false;
+      var wrongOnly = false;
+      var confirmPending = false;
+
+      var quizEl = document.getElementById("quiz");
+      var answeredCountEl = document.getElementById("answeredCount");
+      var progressBarEl = document.getElementById("progressBar");
+      var barStatEl = document.getElementById("barStat");
+      var submitBtn = document.getElementById("submitBtn");
+      var resetBtn = document.getElementById("resetBtn");
+      var resultBox = document.getElementById("resultBox");
+      var scoreNum = document.getElementById("scoreNum");
+      var scoreNote = document.getElementById("scoreNote");
+      var noticeBox = document.getElementById("noticeBox");
+      var wrongToggle = document.getElementById("wrongToggle");
+      var emptyFilter = document.getElementById("emptyFilter");
+      var wrongBook = document.getElementById("wrongBook");
+      var wrongBookCount = document.getElementById("wrongBookCount");
+
+      function isWrong(i) {
+        return selected[i] !== QUESTIONS[i].answer;
+      }
+      function wrongIndexes() {
+        var out = [];
+        for (var i = 0; i < QUESTIONS.length; i++) if (isWrong(i)) out.push(i);
+        return out;
+      }
+      function answeredCount() {
+        return Object.keys(selected).length;
+      }
+
+      function buildQuiz() {
+        quizEl.innerHTML = "";
+        QUESTIONS.forEach(function (q, i) {
+          var card = document.createElement("article");
+          card.className = "qcard";
+          card.id = "qcard-" + i;
+
+          var head = document.createElement("div");
+          head.className = "qhead";
+          var no = document.createElement("span");
+          no.className = "qno";
+          no.textContent = "第" + (i + 1) + "题";
+          var main = document.createElement("div");
+          main.className = "qmain";
+          var cat = document.createElement("span");
+          cat.className = "cat";
+          cat.textContent = q.cat;
+          var stem = document.createElement("p");
+          stem.className = "qstem";
+          stem.textContent = q.stem;
+          main.appendChild(cat);
+          main.appendChild(stem);
+          var badge = document.createElement("span");
+          badge.className = "badge";
+          badge.id = "badge-" + i;
+          head.appendChild(no);
+          head.appendChild(main);
+          head.appendChild(badge);
+          card.appendChild(head);
+
+          var opts = document.createElement("div");
+          opts.className = "options";
+          opts.setAttribute("role", "radiogroup");
+          opts.setAttribute("aria-label", "第" + (i + 1) + "题选项");
+          q.options.forEach(function (text, j) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "opt";
+            btn.id = "opt-" + i + "-" + j;
+            btn.setAttribute("role", "radio");
+            btn.setAttribute("aria-checked", "false");
+            var letter = document.createElement("span");
+            letter.className = "letter";
+            letter.textContent = LETTERS[j];
+            var body = document.createElement("span");
+            body.textContent = text;
+            var mark = document.createElement("span");
+            mark.className = "mark";
+            mark.id = "mark-" + i + "-" + j;
+            btn.appendChild(letter);
+            btn.appendChild(body);
+            btn.appendChild(mark);
+            btn.addEventListener("click", function () { pick(i, j); });
+            opts.appendChild(btn);
+          });
+          card.appendChild(opts);
+
+          var ex = document.createElement("div");
+          ex.className = "explain";
+          ex.id = "explain-" + i;
+          var ans = document.createElement("p");
+          ans.className = "ans";
+          ans.id = "ans-" + i;
+          var bodyP = document.createElement("p");
+          bodyP.className = "body";
+          var b = document.createElement("b");
+          b.textContent = "解析：";
+          bodyP.appendChild(b);
+          bodyP.appendChild(document.createTextNode(q.explanation));
+          ex.appendChild(ans);
+          ex.appendChild(bodyP);
+          card.appendChild(ex);
+
+          quizEl.appendChild(card);
+        });
+
+        // ---------- 申论题（第 5 题，不判分） ----------
+        var ecard = document.createElement("article");
+        ecard.className = "qcard";
+        ecard.id = "qcard-essay";
+        var ehead = document.createElement("div");
+        ehead.className = "qhead";
+        var eno = document.createElement("span");
+        eno.className = "qno";
+        eno.textContent = "第5题";
+        var emain = document.createElement("div");
+        emain.className = "qmain";
+        var ecat = document.createElement("span");
+        ecat.className = "cat";
+        ecat.textContent = ESSAY.cat;
+        var emat = document.createElement("p");
+        emat.className = "qstem";
+        emat.textContent = ESSAY.material;
+        var ereq = document.createElement("p");
+        ereq.className = "qstem";
+        ereq.style.marginTop = "8px";
+        ereq.textContent = ESSAY.requirement;
+        emain.appendChild(ecat);
+        emain.appendChild(emat);
+        emain.appendChild(ereq);
+        ehead.appendChild(eno);
+        ehead.appendChild(emain);
+        ecard.appendChild(ehead);
+
+        var ta = document.createElement("textarea");
+        ta.className = "essay-input";
+        ta.id = "essayInput";
+        ta.placeholder = "在此作答，不超过 150 字";
+        ta.setAttribute("aria-label", "申论作答输入框");
+        ta.addEventListener("input", updateCharCount);
+        ecard.appendChild(ta);
+        var cc = document.createElement("p");
+        cc.className = "charcount";
+        cc.id = "charCount";
+        cc.textContent = "已写 0 字";
+        ecard.appendChild(cc);
+
+        var ref = document.createElement("div");
+        ref.className = "ref-answer";
+        ref.id = "refAnswer";
+        var rt = document.createElement("p");
+        rt.className = "rt";
+        var rb0 = document.createElement("b");
+        rb0.textContent = "参考答案";
+        rt.appendChild(rb0);
+        rt.appendChild(document.createTextNode("（供对照，不参与判分）"));
+        var rb = document.createElement("p");
+        rb.className = "rb";
+        rb.textContent = ESSAY.reference;
+        ref.appendChild(rt);
+        ref.appendChild(rb);
+        ecard.appendChild(ref);
+
+        quizEl.appendChild(ecard);
+      }
+
+      function updateCharCount() {
+        var ta = document.getElementById("essayInput");
+        var cc = document.getElementById("charCount");
+        if (ta && cc) cc.textContent = "已写 " + ta.value.length + " 字";
+      }
+
+      function refreshProgress() {
+        var n = answeredCount();
+        answeredCountEl.textContent = n;
+        barStatEl.textContent = "行测已答 " + n + "/" + TOTAL;
+        progressBarEl.style.width = (n / TOTAL * 100) + "%";
+      }
+
+      function pick(i, j) {
+        if (submitted) return;
+        selected[i] = j;
+        confirmPending = false;
+        noticeBox.classList.remove("show");
+        QUESTIONS[i].options.forEach(function (_, k) {
+          var el = document.getElementById("opt-" + i + "-" + k);
+          var on = k === j;
+          el.classList.toggle("selected", on);
+          el.setAttribute("aria-checked", on ? "true" : "false");
+        });
+        refreshProgress();
+      }
+
+      function renderWrongBook() {
+        if (!submitted) {
+          wrongBook.innerHTML = '<p class="empty-note">暂无错题</p>';
+          wrongBookCount.textContent = "";
+          return;
+        }
+        var wrongs = wrongIndexes();
+        if (wrongs.length === 0) {
+          wrongBook.innerHTML = '<p class="empty-note">暂无错题</p>';
+          wrongBookCount.textContent = "共 0 题";
+          return;
+        }
+        wrongBookCount.textContent = "共 " + wrongs.length + " 题";
+        wrongBook.innerHTML = "";
+        wrongs.forEach(function (i) {
+          var q = QUESTIONS[i];
+          var item = document.createElement("div");
+          item.className = "wrong-item";
+          var t = document.createElement("p");
+          t.className = "t";
+          t.textContent = "第" + (i + 1) + "题（" + q.cat + "）：" + q.stem;
+          var a = document.createElement("p");
+          a.className = "a";
+          a.appendChild(document.createTextNode("正确答案："));
+          var b = document.createElement("b");
+          b.textContent = LETTERS[q.answer] + ". " + q.options[q.answer];
+          a.appendChild(b);
+          a.appendChild(document.createTextNode(selected[i] === undefined
+            ? "（本题未作答）"
+            : "（你选了 " + LETTERS[selected[i]] + ". " + q.options[selected[i]] + "）"));
+          item.appendChild(t);
+          item.appendChild(a);
+          wrongBook.appendChild(item);
+        });
+      }
+
+      function applyFilter() {
+        var anyVisible = false;
+        QUESTIONS.forEach(function (_, i) {
+          var card = document.getElementById("qcard-" + i);
+          var hide = submitted && wrongOnly && !isWrong(i);
+          card.classList.toggle("hidden", hide);
+          if (!hide) anyVisible = true;
+        });
+        var essayCard = document.getElementById("qcard-essay");
+        if (essayCard) essayCard.classList.toggle("hidden", submitted && wrongOnly);
+        emptyFilter.classList.toggle("show", submitted && wrongOnly && !anyVisible);
+      }
+
+      function submit() {
+        var unanswered = TOTAL - answeredCount();
+        if (unanswered > 0 && !confirmPending) {
+          confirmPending = true;
+          noticeBox.textContent = "还有 " + unanswered + " 道行测题未作答，交卷后未答题按错题计。再点一次「交卷」确认提交。";
+          noticeBox.classList.add("show");
+          noticeBox.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+        noticeBox.classList.remove("show");
+        submitted = true;
+
+        var correct = 0;
+        QUESTIONS.forEach(function (q, i) {
+          var right = selected[i] === q.answer;
+          if (right) correct++;
+          var badge = document.getElementById("badge-" + i);
+          badge.textContent = selected[i] === undefined ? "未作答" : (right ? "答对" : "答错");
+          badge.className = "badge " + (right ? "right" : "wrong");
+          q.options.forEach(function (_, j) {
+            var el = document.getElementById("opt-" + i + "-" + j);
+            el.classList.add("locked");
+            el.classList.remove("selected");
+            document.getElementById("mark-" + i + "-" + j).textContent = "";
+            if (j === q.answer) {
+              el.classList.add("correct");
+              document.getElementById("mark-" + i + "-" + j).textContent = "✓";
+            } else if (j === selected[i]) {
+              el.classList.add("wrongpick");
+              document.getElementById("mark-" + i + "-" + j).textContent = "✕";
+            }
+          });
+          var ans = document.getElementById("ans-" + i);
+          ans.innerHTML = "";
+          ans.appendChild(document.createTextNode("正确答案："));
+          var ab = document.createElement("b");
+          ab.textContent = LETTERS[q.answer] + ". " + q.options[q.answer];
+          ans.appendChild(ab);
+          if (selected[i] !== undefined) {
+            var mine = document.createElement("span");
+            mine.className = right ? "mine-ok" : "mine-bad";
+            mine.textContent = "　你的答案：" + LETTERS[selected[i]] + (right ? " ✓" : " ✕");
+            ans.appendChild(mine);
+          } else {
+            var none = document.createElement("span");
+            none.className = "mine-bad";
+            none.textContent = "　你未作答";
+            ans.appendChild(none);
+          }
+          document.getElementById("explain-" + i).classList.add("show");
+        });
+
+        // 申论：锁定输入，显示参考答案
+        var ta = document.getElementById("essayInput");
+        if (ta) ta.readOnly = true;
+        document.getElementById("refAnswer").classList.add("show");
+
+        scoreNum.textContent = correct + "/" + TOTAL;
+        var wrongs = TOTAL - correct;
+        scoreNote.textContent = wrongs === 0
+          ? "行测全对。申论参考答案已显示在第 5 题下方，写完可自行对照。"
+          : "行测答错 " + wrongs + " 题，已收进下方错题本；点上方开关可只复盘错题。申论参考答案已显示在第 5 题下方，可自行对照。";
+        resultBox.classList.add("show");
+
+        submitBtn.hidden = true;
+        resetBtn.hidden = false;
+        wrongToggle.disabled = false;
+        wrongToggle.classList.remove("disabled");
+        barStatEl.textContent = "行测答对 " + correct + "/" + TOTAL;
+
+        renderWrongBook();
+        applyFilter();
+        resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function reset() {
+        selected = {};
+        submitted = false;
+        wrongOnly = false;
+        confirmPending = false;
+        wrongToggle.setAttribute("aria-pressed", "false");
+        wrongToggle.disabled = true;
+        wrongToggle.classList.add("disabled");
+        resultBox.classList.remove("show");
+        noticeBox.classList.remove("show");
+        submitBtn.hidden = false;
+        resetBtn.hidden = true;
+        buildQuiz();
+        renderWrongBook();
+        refreshProgress();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      submitBtn.addEventListener("click", submit);
+      resetBtn.addEventListener("click", reset);
+      wrongToggle.addEventListener("click", function () {
+        wrongOnly = !wrongOnly;
+        wrongToggle.setAttribute("aria-pressed", wrongOnly ? "true" : "false");
+        applyFilter();
+      });
+
+      buildQuiz();
+      renderWrongBook();
+      refreshProgress();
+    </script>
+  </body>
+</html>
