@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>时政每日练-20261127</title>
+<style>
+  :root{
+    --red:#b91c1c; --red-dark:#991b1b; --red-light:#fef2f2; --red-border:#fecaca;
+    --bg:#f7f5f2; --card:#ffffff; --text:#1c1917; --muted:#78716c; --line:#e7e5e4;
+    --green:#15803d; --green-bg:#f0fdf4; --wrong-bg:#fef2f2; --gold:#92400e;
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#1c1917; --card:#292524; --text:#f5f5f4; --muted:#a8a29e; --line:#44403c; --red-light:#450a0a; --red-border:#7f1d1d; --green-bg:#052e16; --wrong-bg:#450a0a; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding-bottom:92px}
+  button,[role="button"]{min-height:44px}
+  .wrap{max-width:760px;margin:0 auto;padding:16px 14px 24px}
+  /* header */
+  .hero{background:var(--red);color:#fff;border-radius:16px;padding:22px 20px 18px;margin-bottom:14px}
+  .hero-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+  .tag{background:#fff;color:var(--red);font-weight:700;font-size:12px;padding:3px 10px;border-radius:999px;letter-spacing:.02em}
+  .date{font-size:13px;opacity:.92}
+  .hero h1{margin:0;font-size:26px;line-height:1.25;letter-spacing:.01em}
+  .hero p{margin:10px 0 0;font-size:14px;opacity:.95;line-height:1.65}
+  /* cards */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;margin-bottom:14px}
+  .card h2{margin:0 0 12px;font-size:17px;display:flex;align-items:center;gap:8px}
+  .card h2::before{content:"";width:4px;height:18px;background:var(--red);border-radius:2px;flex:none}
+  .news-item{padding:12px 0;border-top:1px solid var(--line)}
+  .news-item:first-of-type{border-top:none;padding-top:2px}
+  .news-item h3{margin:0 0 4px;font-size:15px;line-height:1.5}
+  .news-meta{font-size:12px;color:var(--red);font-weight:600;margin-bottom:4px}
+  .news-item p{margin:0;font-size:14px;color:var(--muted)}
+  @media (prefers-color-scheme: dark){ .news-item p{color:var(--muted)} }
+  /* score */
+  #scoreBanner{display:none;background:var(--card);border:2px solid var(--red);border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:14px}
+  #scoreBanner.show{display:block}
+  #scoreBanner .big{font-size:30px;font-weight:800;color:var(--red);line-height:1.2}
+  #scoreBanner .sub{font-size:14px;color:var(--muted)}
+  /* controls */
+  .controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .controls .hint{font-size:13px;color:var(--muted)}
+  .switch{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer;padding:8px 4px;min-height:44px}
+  .switch input{width:20px;height:20px;accent-color:var(--red)}
+  /* questions */
+  .q-head{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+  .q-title{font-size:15px;font-weight:700;line-height:1.6}
+  .q-type{flex:none;font-size:12px;background:var(--red-light);color:var(--red);border:1px solid var(--red-border);padding:2px 8px;border-radius:999px;font-weight:700;margin-top:2px}
+  .q-stem{font-size:15px;margin:8px 0 12px;line-height:1.75}
+  .opts{display:grid;gap:8px}
+  .opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:12px 12px;font-size:14.5px;line-height:1.6;color:var(--text);cursor:pointer;font-family:inherit}
+  .opt .letter{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:13px;margin-top:1px}
+  .opt.selected{border-color:var(--red);background:var(--red-light)}
+  .opt.selected .letter{background:var(--red);color:#fff;border-color:var(--red)}
+  .opt.correct{border-color:var(--green);background:var(--green-bg)}
+  .opt.correct .letter{background:var(--green);color:#fff;border-color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:var(--wrong-bg)}
+  .opt.wrong .letter{background:var(--red);color:#fff;border-color:var(--red)}
+  .opt:disabled{cursor:default;opacity:1}
+  .verdict{display:none;margin-top:12px;font-size:13px;font-weight:700}
+  .verdict.show{display:block}
+  .verdict.ok{color:var(--green)} .verdict.no{color:var(--red)}
+  .explain{display:none;margin-top:8px;background:var(--bg);border-radius:10px;padding:12px;font-size:14px;line-height:1.75}
+  .explain.show{display:block}
+  .explain b{color:var(--red)}
+  /* essay */
+  .material{background:var(--bg);border-radius:10px;padding:12px;font-size:14.5px;line-height:1.8;margin-bottom:12px}
+  .req{font-size:14.5px;font-weight:600;margin:0 0 10px}
+  textarea{width:100%;min-height:150px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:15px;line-height:1.7;font-family:inherit;color:var(--text);background:var(--card);resize:vertical}
+  textarea:focus{outline:2px solid var(--red-border);border-color:var(--red)}
+  textarea:disabled{opacity:.85}
+  .char-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+  .ref-answer{display:none;margin-top:14px;border:1.5px dashed var(--red-border);background:var(--red-light);border-radius:10px;padding:12px;font-size:14px;line-height:1.8}
+  .ref-answer.show{display:block}
+  .ref-answer b{color:var(--red)}
+  /* wrong book */
+  #wrongList{font-size:14px;color:var(--muted)}
+  #wrongList .w-item{padding:10px 0;border-top:1px solid var(--line);color:var(--text)}
+  #wrongList .w-item:first-child{border-top:none}
+  .hidden-q{display:none !important}
+  .empty-note{font-size:14px;color:var(--muted)}
+  /* bottom bar */
+  .bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));z-index:20}
+  .bar-in{max-width:760px;margin:0 auto}
+  .bar-row{display:flex;align-items:center;gap:10px}
+  .progress-wrap{flex:1}
+  .progress-label{font-size:12px;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between}
+  .track{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+  .fill{height:100%;background:var(--red);width:0%;transition:width .25s}
+  .btn{border:none;border-radius:10px;padding:0 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;min-height:46px}
+  .btn-primary{background:var(--red);color:#fff;min-width:108px}
+  .btn-primary.confirm{background:var(--gold);background:#b45309}
+  .btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--line)}
+  #confirmTip{display:none;font-size:13px;color:#b45309;font-weight:600;margin-bottom:6px}
+  #confirmTip.show{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-top"><span class="tag">2027 湖北省考</span><span class="date">2026年11月27日 · 星期五</span></div>
+    <h1>时政每日练-20261127</h1>
+    <p>行测 4 道单选 + 申论 1 道。行测点选项作答，点「交卷」看成绩与解析；申论在输入框作答，交卷后对照参考答案自查。</p>
+  </header>
+
+  <div id="scoreBanner"><div class="big" id="scoreBig"></div><div class="sub" id="scoreSub"></div></div>
+
+  <section class="card" id="newsCard">
+    <h2>今日时政速读</h2>
+    <article class="news-item">
+      <h3>李强主持召开国务院常务会议</h3>
+      <div class="news-meta">新华社 · 2026年11月27日</div>
+      <p>听取推动高质量发展综合督查情况汇报，部署推进基本医疗保险省级统筹工作，审议通过《全民阅读促进条例（草案）》。</p>
+    </article>
+    <article class="news-item">
+      <h3>习近平对党内法规工作作出重要指示</h3>
+      <div class="news-meta">新华社 · 2026年11月26日</div>
+      <p>强调坚持把依规治党当作管党治党基本方式，持续高质量推进党内法规制度建设。</p>
+    </article>
+    <article class="news-item">
+      <h3>李强会见亚洲开发银行行长神田真人</h3>
+      <div class="news-meta">新华社 · 2026年11月27日</div>
+      <p>双方就深化中国与亚洲开发银行合作交换意见。</p>
+    </article>
+  </section>
+
+  <div class="controls">
+    <span class="hint">行测 · 单项选择题（共 4 题）</span>
+    <label class="switch"><input type="checkbox" id="onlyWrongToggle" /> 只看错题</label>
+  </div>
+
+  <div id="quiz"></div>
+
+  <section class="card" id="essayCard">
+    <div class="q-head"><span class="q-title">第 5 题</span><span class="q-type">申论 · 不计分</span></div>
+    <div class="material">近年来，B 市推进“15 分钟便民生活圈”建设：在社区周边布局菜市场、生鲜超市、便利店，居民步行 15 分钟可满足日常购物；新建社区食堂 120 家，为老年人提供平价午餐；增设 24 小时自助图书馆、健身驿站 80 处；开通社区微循环公交线路 15 条，串联医院、学校、商超；改造老旧小区 46 个，加装电梯 210 部。居民对生活便利度满意率达 94%。</div>
+    <p class="req">请根据给定资料，概括 B 市建设“15 分钟便民生活圈”的主要做法，不超过 150 字。</p>
+    <textarea id="essayInput" placeholder="在此输入你的作答……" maxlength="600"></textarea>
+    <div class="char-row"><span>字数统计</span><span><span id="charCount">0</span> / 150 字</span></div>
+    <div class="ref-answer" id="refAnswer"><b>参考答案：</b>B 市主要做法：一是完善商业配套，布局菜市场、生鲜超市、便利店，15 分钟可满足日常购物；二是新建社区食堂 120 家，为老年人提供平价午餐；三是增设文体设施，建 24 小时自助图书馆、健身驿站 80 处；四是开通社区微循环公交 15 条，串联医院、学校、商超；五是改造老旧小区 46 个，加装电梯 210 部；居民生活便利度满意率达 94%。</div>
+  </section>
+
+  <section class="card" id="wrongCard">
+    <h2>错题本</h2>
+    <div id="wrongList"><span class="empty-note">暂无错题</span></div>
+  </section>
+</div>
+
+<div class="bar">
+  <div class="bar-in">
+    <div id="confirmTip">还有题目未作答，确认交卷吗？再点一次「确认交卷」提交。</div>
+    <div class="bar-row">
+      <div class="progress-wrap">
+        <div class="progress-label"><span>行测已答</span><span id="progressText">0 / 4</span></div>
+        <div class="track"><div class="fill" id="progressFill"></div></div>
+      </div>
+      <button class="btn btn-ghost" id="redoBtn" type="button">重做</button>
+      <button class="btn btn-primary" id="submitBtn" type="button">交卷</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var QUESTIONS = [
+  { id:1, type:"常识判断", stem:"下列关于我国古代科技成就的表述，正确的是（ ）。",
+    options:["蔡伦改进造纸术是在东汉时期","毕昇发明活字印刷术是在唐朝","张衡发明地动仪是在西汉时期","祖冲之将圆周率精确到小数点后7位是在宋朝"],
+    answer:0, explain:"蔡伦于东汉和帝时期改进造纸术；毕昇发明活字印刷术在北宋；张衡发明地动仪在东汉；祖冲之生活于南北朝时期。" },
+  { id:2, type:"言语理解", stem:"面对复杂多变的国际形势，我们要保持战略定力，________，既不妄自菲薄，也不妄自尊大，坚定不移走好自己的路。",
+    options:["居安思危","不卑不亢","未雨绸缪","高瞻远瞩"],
+    answer:1, explain:"“既不妄自菲薄，也不妄自尊大”与“不卑不亢”语义对应，指既不自卑也不自傲；A、C 强调防患于未然，D 强调眼光长远，均与句意不符。" },
+  { id:3, type:"数量关系", stem:"一项工程，甲单独做需要12天完成，乙单独做需要18天完成。两人合作4天后，剩下的由乙单独完成，还需要多少天？（ ）",
+    options:["6天","8天","10天","12天"],
+    answer:1, explain:"两人合作4天完成 4×(1/12+1/18)=5/9，剩余 4/9，乙单独完成需 (4/9)÷(1/18)=8 天。" },
+  { id:4, type:"判断推理", stem:"阳光：紫外线 （ ）",
+    options:["电视：辐射","电脑：程序","音乐：音符","雨水：酸雨"],
+    answer:2, explain:"紫外线是阳光的组成部分，音符是音乐的组成部分，二者均为整体与组成部分的关系。A 项电视与辐射是产生关系，D 项酸雨是雨水的一种，属种属关系。" }
+];
+var LETTERS = ["A","B","C","D"];
+var answers = {}; var submitted = false; var confirmPending = false; var wrongIds = [];
+
+var quizEl = document.getElementById('quiz');
+function renderQuiz(){
+  quizEl.innerHTML = '';
+  QUESTIONS.forEach(function(q){
+    var card = document.createElement('section');
+    card.className = 'card q-card'; card.id = 'qcard-'+q.id; card.setAttribute('data-qid', q.id);
+    var head = '<div class="q-head"><span class="q-title">第 '+q.id+' 题</span><span class="q-type">'+q.type+'</span></div>';
+    var stem = '<p class="q-stem">'+q.stem+'</p>';
+    var opts = '<div class="opts">';
+    q.options.forEach(function(opt, idx){
+      opts += '<button type="button" class="opt" data-q="'+q.id+'" data-idx="'+idx+'"><span class="letter">'+LETTERS[idx]+'</span><span>'+opt+'</span></button>';
+    });
+    opts += '</div>';
+    var verdict = '<div class="verdict" id="verdict-'+q.id+'"></div>';
+    var explain = '<div class="explain" id="explain-'+q.id+'"><b>解析：</b>'+q.explain+'<br><b>正确答案：'+LETTERS[q.answer]+'</b></div>';
+    card.innerHTML = head + stem + opts + verdict + explain;
+    quizEl.appendChild(card);
+  });
+  var btns = quizEl.querySelectorAll('.opt');
+  for (var i=0;i<btns.length;i++){
+    btns[i].addEventListener('click', function(){
+      if (submitted) return;
+      var qid = this.getAttribute('data-q'); var idx = parseInt(this.getAttribute('data-idx'),10);
+      answers[qid] = idx; cancelConfirm(); refreshSelection(); updateProgress();
+    });
+  }
+}
+function refreshSelection(){
+  var btns = quizEl.querySelectorAll('.opt');
+  for (var i=0;i<btns.length;i++){
+    var qid = btns[i].getAttribute('data-q'); var idx = parseInt(btns[i].getAttribute('data-idx'),10);
+    btns[i].classList.toggle('selected', answers[qid] === idx);
+  }
+}
+function answeredCount(){ return Object.keys(answers).length; }
+function updateProgress(){
+  var n = answeredCount();
+  document.getElementById('progressText').textContent = n + ' / 4';
+  document.getElementById('progressFill').style.width = (n/4*100) + '%';
+}
+function cancelConfirm(){
+  confirmPending = false;
+  document.getElementById('confirmTip').classList.remove('show');
+  var b = document.getElementById('submitBtn'); b.textContent = '交卷'; b.classList.remove('confirm');
+}
+function applyOnlyWrong(){
+  var only = document.getElementById('onlyWrongToggle').checked;
+  QUESTIONS.forEach(function(q){
+    var card = document.getElementById('qcard-'+q.id);
+    if (!card) return;
+    if (only && submitted) card.classList.toggle('hidden-q', wrongIds.indexOf(q.id) === -1);
+    else if (only && !submitted) card.classList.add('hidden-q');
+    else card.classList.remove('hidden-q');
+    if (only && submitted && wrongIds.length === 0) card.classList.add('hidden-q');
+  });
+  document.getElementById('essayCard').style.display = only ? 'none' : '';
+  document.getElementById('newsCard').style.display = only ? 'none' : '';
+}
+function doSubmit(){
+  submitted = true; cancelConfirm(); wrongIds = [];
+  var correct = 0;
+  QUESTIONS.forEach(function(q){
+    var chosen = answers[q.id]; var isOk = chosen === q.answer;
+    if (isOk) correct++; else wrongIds.push(q.id);
+    var btns = document.querySelectorAll('.opt[data-q="'+q.id+'"]');
+    btns.forEach(function(b){
+      var idx = parseInt(b.getAttribute('data-idx'),10); b.disabled = true; b.classList.remove('selected');
+      if (idx === q.answer) b.classList.add('correct');
+      else if (idx === chosen) b.classList.add('wrong');
+    });
+    var v = document.getElementById('verdict-'+q.id);
+    v.classList.add('show');
+    if (chosen === undefined){ v.textContent = '✕ 未作答 · 正确答案 ' + LETTERS[q.answer]; v.className = 'verdict show no'; }
+    else if (isOk){ v.textContent = '✓ 回答正确'; v.className = 'verdict show ok'; }
+    else { v.textContent = '✕ 回答错误 · 你选了 ' + LETTERS[chosen] + '，正确答案 ' + LETTERS[q.answer]; v.className = 'verdict show no'; }
+    document.getElementById('explain-'+q.id).classList.add('show');
+  });
+  document.getElementById('scoreBig').textContent = correct + ' / 4 题正确';
+  document.getElementById('scoreSub').textContent = correct === 4 ? '全部答对，继续保持！' : ('答对 ' + correct + ' 题，答错 ' + (4-correct) + ' 题，错题已收进错题本。');
+  document.getElementById('scoreBanner').classList.add('show');
+  var wl = document.getElementById('wrongList');
+  if (wrongIds.length === 0){ wl.innerHTML = '<span class="empty-note">暂无错题</span>'; }
+  else {
+    var html = '';
+    wrongIds.forEach(function(id){
+      var q = QUESTIONS[id-1];
+      html += '<div class="w-item"><b>第 '+id+' 题（'+q.type+'）</b>：'+q.stem+'<br>正确答案：'+LETTERS[q.answer]+'．'+q.options[q.answer]+'</div>';
+    });
+    wl.innerHTML = html;
+  }
+  document.getElementById('essayInput').disabled = true;
+  document.getElementById('refAnswer').classList.add('show');
+  document.getElementById('submitBtn').textContent = '已交卷';
+  document.getElementById('submitBtn').disabled = true;
+  applyOnlyWrong();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.getElementById('submitBtn').addEventListener('click', function(){
+  if (submitted) return;
+  if (answeredCount() < 4 && !confirmPending){
+    confirmPending = true;
+    document.getElementById('confirmTip').classList.add('show');
+    this.textContent = '确认交卷'; this.classList.add('confirm');
+    return;
+  }
+  doSubmit();
+});
+document.getElementById('redoBtn').addEventListener('click', function(){
+  answers = {}; submitted = false; wrongIds = []; cancelConfirm();
+  document.getElementById('scoreBanner').classList.remove('show');
+  var sb = document.getElementById('submitBtn'); sb.disabled = false; sb.textContent = '交卷';
+  document.getElementById('essayInput').disabled = false; document.getElementById('essayInput').value = '';
+  document.getElementById('charCount').textContent = '0';
+  document.getElementById('refAnswer').classList.remove('show');
+  document.getElementById('wrongList').innerHTML = '<span class="empty-note">暂无错题</span>';
+  document.getElementById('onlyWrongToggle').checked = false;
+  renderQuiz(); updateProgress(); applyOnlyWrong();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+document.getElementById('onlyWrongToggle').addEventListener('change', applyOnlyWrong);
+document.getElementById('essayInput').addEventListener('input', function(){
+  document.getElementById('charCount').textContent = this.value.length;
+});
+renderQuiz(); updateProgress();
+</script>
+</body>
+</html>
