@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>时政每日练-20261128</title>
+<style>
+  :root{
+    --red:#b91c1c; --red-dark:#991b1b; --red-light:#fef2f2; --red-border:#fecaca;
+    --bg:#f7f5f2; --card:#ffffff; --text:#1c1917; --muted:#78716c; --line:#e7e5e4;
+    --green:#15803d; --green-bg:#f0fdf4; --wrong-bg:#fef2f2; --gold:#92400e;
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#1c1917; --card:#292524; --text:#f5f5f4; --muted:#a8a29e; --line:#44403c; --red-light:#450a0a; --red-border:#7f1d1d; --green-bg:#052e16; --wrong-bg:#450a0a; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding-bottom:92px}
+  button,[role="button"]{min-height:44px}
+  .wrap{max-width:760px;margin:0 auto;padding:16px 14px 24px}
+  /* header */
+  .hero{background:var(--red);color:#fff;border-radius:16px;padding:22px 20px 18px;margin-bottom:14px}
+  .hero-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+  .tag{background:#fff;color:var(--red);font-weight:700;font-size:12px;padding:3px 10px;border-radius:999px;letter-spacing:.02em}
+  .date{font-size:13px;opacity:.92}
+  .hero h1{margin:0;font-size:26px;line-height:1.25;letter-spacing:.01em}
+  .hero p{margin:10px 0 0;font-size:14px;opacity:.95;line-height:1.65}
+  /* cards */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;margin-bottom:14px}
+  .card h2{margin:0 0 12px;font-size:17px;display:flex;align-items:center;gap:8px}
+  .card h2::before{content:"";width:4px;height:18px;background:var(--red);border-radius:2px;flex:none}
+  .news-item{padding:12px 0;border-top:1px solid var(--line)}
+  .news-item:first-of-type{border-top:none;padding-top:2px}
+  .news-item h3{margin:0 0 4px;font-size:15px;line-height:1.5}
+  .news-meta{font-size:12px;color:var(--red);font-weight:600;margin-bottom:4px}
+  .news-item p{margin:0;font-size:14px;color:var(--muted)}
+  /* score */
+  #scoreBanner{display:none;background:var(--card);border:2px solid var(--red);border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:14px}
+  #scoreBanner.show{display:block}
+  #scoreBanner .big{font-size:30px;font-weight:800;color:var(--red);line-height:1.2}
+  #scoreBanner .sub{font-size:14px;color:var(--muted)}
+  /* controls */
+  .controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .controls .hint{font-size:13px;color:var(--muted)}
+  .switch{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer;padding:8px 4px;min-height:44px}
+  .switch input{width:20px;height:20px;accent-color:var(--red)}
+  /* questions */
+  .q-head{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+  .q-title{font-size:15px;font-weight:700;line-height:1.6}
+  .q-type{flex:none;font-size:12px;background:var(--red-light);color:var(--red);border:1px solid var(--red-border);padding:2px 8px;border-radius:999px;font-weight:700;margin-top:2px}
+  .q-stem{font-size:15px;margin:8px 0 12px;line-height:1.75}
+  .opts{display:grid;gap:8px}
+  .opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:12px 12px;font-size:14.5px;line-height:1.6;color:var(--text);cursor:pointer;font-family:inherit}
+  .opt .letter{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:13px;margin-top:1px}
+  .opt.selected{border-color:var(--red);background:var(--red-light)}
+  .opt.selected .letter{background:var(--red);color:#fff;border-color:var(--red)}
+  .opt.correct{border-color:var(--green);background:var(--green-bg)}
+  .opt.correct .letter{background:var(--green);color:#fff;border-color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:var(--wrong-bg)}
+  .opt.wrong .letter{background:var(--red);color:#fff;border-color:var(--red)}
+  .opt:disabled{cursor:default;opacity:1}
+  .verdict{display:none;margin-top:12px;font-size:13px;font-weight:700}
+  .verdict.show{display:block}
+  .verdict.ok{color:var(--green)} .verdict.no{color:var(--red)}
+  .explain{display:none;margin-top:8px;background:var(--bg);border-radius:10px;padding:12px;font-size:14px;line-height:1.75}
+  .explain.show{display:block}
+  .explain b{color:var(--red)}
+  /* essay */
+  .material{background:var(--bg);border-radius:10px;padding:12px;font-size:14.5px;line-height:1.8;margin-bottom:12px}
+  .req{font-size:14.5px;font-weight:600;margin:0 0 10px}
+  textarea{width:100%;min-height:150px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:15px;line-height:1.7;font-family:inherit;color:var(--text);background:var(--card);resize:vertical}
+  textarea:focus{outline:2px solid var(--red-border);border-color:var(--red)}
+  textarea:disabled{opacity:.85}
+  .char-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+  .ref-answer{display:none;margin-top:14px;border:1.5px dashed var(--red-border);background:var(--red-light);border-radius:10px;padding:12px;font-size:14px;line-height:1.8}
+  .ref-answer.show{display:block}
+  .ref-answer b{color:var(--red)}
+  /* wrong book */
+  #wrongList{font-size:14px;color:var(--muted)}
+  #wrongList .w-item{padding:10px 0;border-top:1px solid var(--line);color:var(--text)}
+  #wrongList .w-item:first-child{border-top:none}
+  .hidden-q{display:none !important}
+  .empty-note{font-size:14px;color:var(--muted)}
+  /* bottom bar */
+  .bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));z-index:20}
+  .bar-in{max-width:760px;margin:0 auto}
+  .bar-row{display:flex;align-items:center;gap:10px}
+  .progress-wrap{flex:1}
+  .progress-label{font-size:12px;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between}
+  .track{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+  .fill{height:100%;background:var(--red);width:0%;transition:width .25s}
+  .btn{border:none;border-radius:10px;padding:0 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;min-height:46px}
+  .btn-primary{background:var(--red);color:#fff;min-width:108px}
+  .btn-primary.confirm{background:#b45309}
+  .btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--line)}
+  #confirmTip{display:none;font-size:13px;color:#b45309;font-weight:600;margin-bottom:6px}
+  #confirmTip.show{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-top"><span class="tag">2027 湖北省考</span><span class="date">2026年11月28日 · 星期六</span></div>
+    <h1>时政每日练-20261128</h1>
+    <p>行测 4 道单选 + 申论 1 道。行测点选项作答，点「交卷」看成绩与解析；申论在输入框作答，交卷后对照参考答案自查。</p>
+  </header>
+
+  <div id="scoreBanner"><div class="big" id="scoreBig"></div><div class="sub" id="scoreSub"></div></div>
+
+  <div class="controls">
+    <span class="hint">行测 · 单项选择题（共 4 题）</span>
+    <label class="switch"><input type="checkbox" id="onlyWrongToggle" /> 只看错题</label>
+  </div>
+
+  <section class="card" id="newsCard">
+    <h2>今日时政速读</h2>
+    <article class="news-item">
+      <h3>以全面从严治党新成效护航高质量发展</h3>
+      <div class="news-meta">人民日报 · 2026年11月28日</div>
+      <p>记者走进湖北武汉等地基层一线，看全面从严治党如何护航高质量发展：发展方向更加坚定，干事创业的正能量不断激发。</p>
+    </article>
+    <article class="news-item">
+      <h3>李强主持召开国务院常务会议</h3>
+      <div class="news-meta">新华社 · 2026年11月27日</div>
+      <p>听取推动高质量发展综合督查情况汇报，研究持续深化资本市场投融资综合改革，审议通过《生产安全事故隐患排查治理条例（草案）》。</p>
+    </article>
+    <article class="news-item">
+      <h3>一见·APEC会场之外，外方领导人这样看深圳</h3>
+      <div class="news-meta">人民日报客户端 · 2026年11月28日</div>
+      <p>11月的深圳见证亚太合作再出发，《深圳倡议》成为APEC工商领导人峰会创办30年来首次以倡议形式发布的成果文件，《亚太经合组织领导人深圳展望》标注APEC合作新的里程碑。</p>
+    </article>
+  </section>
+
+  <div id="quiz"></div>
+
+  <section class="card" id="essayCard">
+    <div class="q-head"><span class="q-title">第 5 题</span><span class="q-type">申论 · 不计分</span></div>
+    <div class="material">近年来，C市推进政务服务“一网通办”：梳理公布1200余项“最多跑一次”事项，企业开办时间由5天压缩至0.5天；推行“无证明城市”改革，取消各类证明材料300余项；上线“随身办”App，90%以上事项可手机办理；设立24小时自助服务区，群众深夜也能办业务；建立“好差评”制度，群众评价直达窗口责任人，差评整改率达100%。企业和群众满意度达98%。</div>
+    <p class="req">请根据给定资料，概括C市推进政务服务“一网通办”的主要做法，不超过150字。</p>
+    <textarea id="essayInput" placeholder="在此输入你的作答……" maxlength="600"></textarea>
+    <div class="char-row"><span>字数统计</span><span><span id="charCount">0</span> / 150 字</span></div>
+    <div class="ref-answer" id="refAnswer"><b>参考答案：</b>C市主要做法：一是梳理公布1200余项“最多跑一次”事项，企业开办时间由5天压缩至0.5天；二是推行“无证明城市”改革，取消各类证明材料300余项；三是上线“随身办”App，90%以上事项可手机办理；四是设立24小时自助服务区，群众深夜也能办业务；五是建立“好差评”制度，群众评价直达窗口责任人，差评整改率达100%；企业和群众满意度达98%。</div>
+  </section>
+
+  <section class="card" id="wrongCard">
+    <h2>错题本</h2>
+    <div id="wrongList"><span class="empty-note">暂无错题</span></div>
+  </section>
+</div>
+
+<div class="bar">
+  <div class="bar-in">
+    <div id="confirmTip">还有题目未作答，确认交卷吗？再点一次「确认交卷」提交。</div>
+    <div class="bar-row">
+      <div class="progress-wrap">
+        <div class="progress-label"><span>行测已答</span><span id="progressText">0 / 4</span></div>
+        <div class="track"><div class="fill" id="progressFill"></div></div>
+      </div>
+      <button class="btn btn-ghost" id="redoBtn" type="button">重做</button>
+      <button class="btn btn-primary" id="submitBtn" type="button">交卷</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var QUESTIONS = [
+  { id:1, type:"常识判断", stem:"下列关于我国法律的表述，正确的是（ ）。",
+    options:["我国宪法规定，公民有言论、出版、集会、结社、游行、示威的自由。","民法典规定，不满8周岁的未成年人为限制民事行为能力人。","刑法规定，已满14周岁不满16周岁的人犯罪，应当负刑事责任。","行政诉讼法规定，公民对行政机关制定的具有普遍约束力的决定、命令，可以直接提起行政诉讼。"],
+    answer:0, explain:"A项符合宪法第三十五条。B项错误：民法典第二十条规定，不满8周岁的未成年人为无民事行为能力人。C项错误：刑法第十七条规定，已满14周岁不满16周岁的人，只对故意杀人、故意伤害致人重伤或者死亡、强奸、抢劫、贩卖毒品、放火、爆炸、投放危险物质等八种犯罪负刑事责任。D项错误：行政诉讼法第十三条规定，人民法院不受理公民对行政法规、规章或者行政机关制定、发布的具有普遍约束力的决定、命令提起的诉讼。" },
+  { id:2, type:"判断推理", stem:"所有公务员都是国家工作人员。小王是国家工作人员。所以，小王是公务员。以下关于这一推理的判断，正确的是（ ）。",
+    options:["推理正确","推理错误，犯了“中项不周延”的逻辑错误","推理错误，犯了“偷换概念”的逻辑错误","无法判断推理是否正确"],
+    answer:1, explain:"中项“国家工作人员”在两个前提中均不周延：大前提中它是肯定命题的谓项，不周延；小前提中它同样是肯定命题的谓项，不周延。两个不周延的中项不能必然推出结论，犯了中项不周延的错误。国家工作人员还包括事业编制人员、国有企业管理人员等，小王不一定是公务员。" },
+  { id:3, type:"数量关系", stem:"某商品原价200元，先提价20%，再降价20%，现价是多少元？（ ）",
+    options:["192元","196元","200元","204元"],
+    answer:0, explain:"提价后价格为200×(1+20%)=240元，再降价20%后为240×(1-20%)=192元。" },
+  { id:4, type:"资料分析", stem:"2025年某省GDP为60000亿元，同比增长5%；其中第一产业增加值5000亿元，同比增长3%；第二产业增加值24000亿元，同比增长4.5%；第三产业增加值31000亿元，同比增长6%。下列说法正确的是（ ）。",
+    options:["第三产业增加值占GDP的比重超过50%","第一产业增加值的同比增量最大","第二产业增加值同比增长最快","该省GDP同比增量为3000亿元"],
+    answer:0, explain:"A项：31000÷60000≈51.7%＞50%，正确。B项：第三产业同比增量约31000÷1.06×6%≈1755亿元，大于第一产业约146亿元，错误。C项：第三产业增速6%最高，错误。D项：GDP同比增量为60000-60000÷1.05≈2857亿元，不是3000亿元，错误。" }
+];
+var LETTERS = ["A","B","C","D"];
+var answers = {}; var submitted = false; var confirmPending = false; var wrongIds = [];
+
+var quizEl = document.getElementById('quiz');
+function renderQuiz(){
+  quizEl.innerHTML = '';
+  QUESTIONS.forEach(function(q){
+    var card = document.createElement('section');
+    card.className = 'card q-card'; card.id = 'qcard-'+q.id; card.setAttribute('data-qid', q.id);
+    var head = '<div class="q-head"><span class="q-title">第 '+q.id+' 题</span><span class="q-type">'+q.type+'</span></div>';
+    var stem = '<p class="q-stem">'+q.stem+'</p>';
+    var opts = '<div class="opts">';
+    q.options.forEach(function(opt, idx){
+      opts += '<button type="button" class="opt" data-q="'+q.id+'" data-idx="'+idx+'"><span class="letter">'+LETTERS[idx]+'</span><span>'+opt+'</span></button>';
+    });
+    opts += '</div>';
+    var verdict = '<div class="verdict" id="verdict-'+q.id+'"></div>';
+    var explain = '<div class="explain" id="explain-'+q.id+'"><b>解析：</b>'+q.explain+'<br><b>正确答案：'+LETTERS[q.answer]+'</b></div>';
+    card.innerHTML = head + stem + opts + verdict + explain;
+    quizEl.appendChild(card);
+  });
+  var btns = quizEl.querySelectorAll('.opt');
+  for (var i=0;i<btns.length;i++){
+    btns[i].addEventListener('click', function(){
+      if (submitted) return;
+      var qid = this.getAttribute('data-q'); var idx = parseInt(this.getAttribute('data-idx'),10);
+      answers[qid] = idx; cancelConfirm(); refreshSelection(); updateProgress();
+    });
+  }
+}
+function refreshSelection(){
+  var btns = quizEl.querySelectorAll('.opt');
+  for (var i=0;i<btns.length;i++){
+    var qid = btns[i].getAttribute('data-q'); var idx = parseInt(btns[i].getAttribute('data-idx'),10);
+    btns[i].classList.toggle('selected', answers[qid] === idx);
+  }
+}
+function answeredCount(){ return Object.keys(answers).length; }
+function updateProgress(){
+  var n = answeredCount();
+  document.getElementById('progressText').textContent = n + ' / 4';
+  document.getElementById('progressFill').style.width = (n/4*100) + '%';
+}
+function cancelConfirm(){
+  confirmPending = false;
+  document.getElementById('confirmTip').classList.remove('show');
+  var b = document.getElementById('submitBtn'); b.textContent = '交卷'; b.classList.remove('confirm');
+}
+function applyOnlyWrong(){
+  var only = document.getElementById('onlyWrongToggle').checked;
+  QUESTIONS.forEach(function(q){
+    var card = document.getElementById('qcard-'+q.id);
+    if (!card) return;
+    if (only && submitted) card.classList.toggle('hidden-q', wrongIds.indexOf(q.id) === -1);
+    else if (only && !submitted) card.classList.add('hidden-q');
+    else card.classList.remove('hidden-q');
+    if (only && submitted && wrongIds.length === 0) card.classList.add('hidden-q');
+  });
+  document.getElementById('essayCard').style.display = only ? 'none' : '';
+  document.getElementById('newsCard').style.display = only ? 'none' : '';
+}
+function doSubmit(){
+  submitted = true; cancelConfirm(); wrongIds = [];
+  var correct = 0;
+  QUESTIONS.forEach(function(q){
+    var chosen = answers[q.id]; var isOk = chosen === q.answer;
+    if (isOk) correct++; else wrongIds.push(q.id);
+    var btns = document.querySelectorAll('.opt[data-q="'+q.id+'"]');
+    btns.forEach(function(b){
+      var idx = parseInt(b.getAttribute('data-idx'),10); b.disabled = true; b.classList.remove('selected');
+      if (idx === q.answer) b.classList.add('correct');
+      else if (idx === chosen) b.classList.add('wrong');
+    });
+    var v = document.getElementById('verdict-'+q.id);
+    v.classList.add('show');
+    if (chosen === undefined){ v.textContent = '✕ 未作答 · 正确答案 ' + LETTERS[q.answer]; v.className = 'verdict show no'; }
+    else if (isOk){ v.textContent = '✓ 回答正确'; v.className = 'verdict show ok'; }
+    else { v.textContent = '✕ 回答错误 · 你选了 ' + LETTERS[chosen] + '，正确答案 ' + LETTERS[q.answer]; v.className = 'verdict show no'; }
+    document.getElementById('explain-'+q.id).classList.add('show');
+  });
+  document.getElementById('scoreBig').textContent = correct + ' / 4 题正确';
+  document.getElementById('scoreSub').textContent = correct === 4 ? '全部答对，继续保持！' : ('答对 ' + correct + ' 题，答错 ' + (4-correct) + ' 题，错题已收进错题本。');
+  document.getElementById('scoreBanner').classList.add('show');
+  var wl = document.getElementById('wrongList');
+  if (wrongIds.length === 0){ wl.innerHTML = '<span class="empty-note">暂无错题</span>'; }
+  else {
+    var html = '';
+    wrongIds.forEach(function(id){
+      var q = QUESTIONS[id-1];
+      html += '<div class="w-item"><b>第 '+id+' 题（'+q.type+'）</b>：'+q.stem+'<br>正确答案：'+LETTERS[q.answer]+'．'+q.options[q.answer]+'</div>';
+    });
+    wl.innerHTML = html;
+  }
+  document.getElementById('essayInput').disabled = true;
+  document.getElementById('refAnswer').classList.add('show');
+  var sb = document.getElementById('submitBtn'); sb.textContent = '已交卷'; sb.disabled = true;
+  applyOnlyWrong();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.getElementById('submitBtn').addEventListener('click', function(){
+  if (submitted) return;
+  if (answeredCount() < 4 && !confirmPending){
+    confirmPending = true;
+    document.getElementById('confirmTip').classList.add('show');
+    this.textContent = '确认交卷'; this.classList.add('confirm');
+    return;
+  }
+  doSubmit();
+});
+document.getElementById('redoBtn').addEventListener('click', function(){
+  answers = {}; submitted = false; wrongIds = []; cancelConfirm();
+  document.getElementById('scoreBanner').classList.remove('show');
+  var sb = document.getElementById('submitBtn'); sb.disabled = false; sb.textContent = '交卷';
+  document.getElementById('essayInput').disabled = false; document.getElementById('essayInput').value = '';
+  document.getElementById('charCount').textContent = '0';
+  document.getElementById('refAnswer').classList.remove('show');
+  document.getElementById('wrongList').innerHTML = '<span class="empty-note">暂无错题</span>';
+  document.getElementById('onlyWrongToggle').checked = false;
+  renderQuiz(); updateProgress(); applyOnlyWrong();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+document.getElementById('onlyWrongToggle').addEventListener('change', applyOnlyWrong);
+document.getElementById('essayInput').addEventListener('input', function(){
+  document.getElementById('charCount').textContent = this.value.length;
+});
+renderQuiz(); updateProgress();
+</script>
+</body>
+</html>
